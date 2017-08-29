@@ -57,7 +57,7 @@ def layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes):
     # TODO: Implement function
     vgg_layer3_out_shape = tf.shape(vgg_layer3_out)
     vgg_layer4_out_shape = tf.shape(vgg_layer4_out)
-#    1x1_convolution = 
+    1x1_convolution = tf.layers.conv2d(vgg_layer7_out,4096,(1,1),strides=(1,1),padding='same', activation=tf.nn.relu)
     return None
 #tests.test_layers(layers)
   
