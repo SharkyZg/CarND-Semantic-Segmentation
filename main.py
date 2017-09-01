@@ -55,9 +55,13 @@ def layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes):
     :return: The Tensor for the last layer of output
     """
     # TODO: Implement function
-    vgg_layer3_out_shape = tf.shape(vgg_layer3_out)
-    vgg_layer4_out_shape = tf.shape(vgg_layer4_out)
-    convolution_1x1 = tf.layers.conv2d(vgg_layer7_out,4096,(1,1),strides=(1,1),padding='same', activation=tf.nn.relu)
+    conv_1x1 = tf.layers.conv2d(vgg_layer7_out, num_classes, 1, padding='same', kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
+    output = tf.layers.conv2d_transpose(conv_1x1, num_classes, 4, 2, padding='same', kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
+    output2 = tf.layers.conv2d_transpose(output, num_classes, 4, 2, padding='same', kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
+
+    # tf.Print(output, [tf.shape(output)]) call dimension by index, for example tf.shape(output)[1:3]
+
+    # Add together skip layers. Upsample by 8 at the end/ return final output (same size as image). Numbers are in the classrom
     return None
 #tests.test_layers(layers)
   
@@ -72,6 +76,7 @@ def optimize(nn_last_layer, correct_label, learning_rate, num_classes):
     :return: Tuple of (logits, train_op, cross_entropy_loss)
     """
     # TODO: Implement function
+    logits = tf.reshape(input, (-1, num_classes))
     return None, None, None
 # tests.test_optimize(optimize)
 
@@ -92,6 +97,10 @@ def train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_l
     :param learning_rate: TF Placeholder for learning rate
     """
     # TODO: Implement function
+    # what get batches is doing?
+    for epochs in epochs:
+      for image, label in get_batches_fn(batch_size): 
+        # training loss = session.run
     pass
 #tests.test_train_nn(train_nn)
 
@@ -120,14 +129,18 @@ def run():
         #  https://datascience.stackexchange.com/questions/5224/how-to-prepare-augment-images-for-neural-network
 
         # TODO: Build NN using load_vgg, layers, and optimize function
+        input_image, keep_prob, layer3_out, layer4_out, layer7_out load_vgg(sess, vgg_path)
+        layer_output = layers(layer3_out, layer4_out, layer7_out, num_classes)
+
 
         # TODO: Train NN using the train_nn function
+
+        # call optimizer, get cross entropy train NN
 
         # TODO: Save inference data using helper.save_inference_samples
         #  helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, keep_prob, input_image)
 
         # OPTIONAL: Apply the trained model to a video
-
 
 if __name__ == '__main__':
     run()
