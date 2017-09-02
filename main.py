@@ -110,13 +110,23 @@ def train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_l
     :param learning_rate: TF Placeholder for learning rate
     """
     # TODO: Implement function
+
+    writer = tf.summary.FileWriter('./TFlog', tf.get_default_graph())
+
     sess.run(tf.global_variables_initializer())
     sess.run(tf.local_variables_initializer())
-
+    index = 0
     for i in range(epochs):
+      batch_index = 0
       for image_batch, label_batch in get_batches_fn(batch_size): 
+        batch_index += 1
         feed_dict = {input_image: image_batch, correct_label: label_batch, keep_prob: 1}
         training_loss = sess.run([train_op, cross_entropy_loss], feed_dict = feed_dict)
+
+        writer.add_summary(training_loss[2],index)
+        index += 1
+        print("Epoch: {} batch: {} loss: {}"
+                  .format(i+1,batch_index,training_loss[1]))
 
 tests.test_train_nn(train_nn)
 
