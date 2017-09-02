@@ -127,7 +127,9 @@ def run():
     data_dir = './data'
     runs_dir = './runs'
     tests.test_for_kitti_dataset(data_dir)
-
+    batch_size = 5
+    num_epochs = 30
+    learning_rate = 0.0005
     # Download pretrained vgg model
     helper.maybe_download_pretrained_vgg(data_dir)
 
@@ -147,7 +149,18 @@ def run():
         # TODO: Build NN using load_vgg, layers, and optimize function
         # input_image, keep_prob, layer3_out, layer4_out, layer7_out load_vgg(sess, vgg_path)
         # layer_output = layers(layer3_out, layer4_out, layer7_out, num_classes)
+        correct_label = tf.placeholder(tf.float32, [None, None, None, num_classes])
 
+        input_image, keep_prob, vgg_layer3_out, vgg_layer4_out, vgg_layer7_out = load_vgg(sess, vgg_path)
+        layers_output = layers(input_image,vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes)
+        logits, train_op, cross_entropy_loss = optimize(layers_output, correct_label, learning_rate, num_classes)
+        train_nn(sess, num_epochs, batch_size, get_batches_fn, train_op, cross_entropy_loss, input_image, correct_label, keep_prob, learning_rate)
+        # TODO: Save inference data using helper.save_inference_samples
+        saver = tf.train.Saver()
+        saver.save(sess, './model/model.ckpt')
+        print('model saved!')
+        out = tf.argmax(tf.nn.softmax(layers_output),axis=-1 , name='labeled_output')
+        tf.train.write_graph(sess.graph.as_graph_def(), './model', 'saved_Graph.pb',as_text=False)
 
         # TODO: Train NN using the train_nn function
 
