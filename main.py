@@ -101,7 +101,7 @@ def train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_l
     for epochs in epochs:
       for image, label in get_batches_fn(batch_size): 
         # training loss = session.run
-    pass
+        
 #tests.test_train_nn(train_nn)
 
 
