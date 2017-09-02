@@ -66,8 +66,8 @@ def layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes):
 
 
     # Add together skip layers. Upsample by 8 at the end/ return final output (same size as image). Numbers are in the classrom
-    return None
-#tests.test_layers(layers)
+    return output3
+tests.test_layers(layers)
   
 
 def optimize(nn_last_layer, correct_label, learning_rate, num_classes):
