@@ -113,7 +113,7 @@ def train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_l
 
     sess.run(tf.global_variables_initializer())
     sess.run(tf.local_variables_initializer())
-    index = 0
+
     for i in range(epochs):
       batch_index = 0
       for image_batch, label_batch in get_batches_fn(batch_size): 
@@ -134,7 +134,7 @@ def run():
     runs_dir = './runs'
     tests.test_for_kitti_dataset(data_dir)
     batch_size = 5
-    num_epochs = 30
+    num_epochs = 5
     learning_rate = 0.0005
     # Download pretrained vgg model
     helper.maybe_download_pretrained_vgg(data_dir)
