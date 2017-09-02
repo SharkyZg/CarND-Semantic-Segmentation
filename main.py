@@ -56,11 +56,11 @@ def layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes):
     """
     # TODO: Implement function
     conv_1x1 = tf.layers.conv2d(vgg_layer7_out, num_classes, 1, padding='same', kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
-    output = tf.layers.conv2d_transpose(conv_1x1, num_classes, 4, 2, padding='same', kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
+    output = tf.layers.conv2d_transpose(conv_1x1, num_classes, 4, strides=(2, 2), padding='same', kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
     output_connected = tf.add(output, vgg_layer4_out)
-    output2 = tf.layers.conv2d_transpose(output_connected, num_classes, 4, 2, padding='same', kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
+    output2 = tf.layers.conv2d_transpose(output_connected, num_classes, 4, strides=(2, 2), padding='same', kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
     output_connected2 = tf.add(output2, vgg_layer3_out)
-    output3 = tf.layers.conv2d_transpose(output_connected2, num_classes, 4, 8, padding='same', kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
+    output3 = tf.layers.conv2d_transpose(output_connected2, num_classes, 4, strides=(4, 4), padding='same', kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
 
     # tf.Print(output, [tf.shape(output)]) call dimension by index, for example tf.shape(output)[1:3]
 
