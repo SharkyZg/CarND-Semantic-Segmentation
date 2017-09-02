@@ -152,7 +152,7 @@ def run():
         correct_label = tf.placeholder(tf.float32, [None, None, None, num_classes])
 
         input_image, keep_prob, vgg_layer3_out, vgg_layer4_out, vgg_layer7_out = load_vgg(sess, vgg_path)
-        layers_output = layers(input_image,vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes)
+        layers_output = layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes)
         logits, train_op, cross_entropy_loss = optimize(layers_output, correct_label, learning_rate, num_classes)
         train_nn(sess, num_epochs, batch_size, get_batches_fn, train_op, cross_entropy_loss, input_image, correct_label, keep_prob, learning_rate)
         # TODO: Save inference data using helper.save_inference_samples
