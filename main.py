@@ -81,9 +81,17 @@ def optimize(nn_last_layer, correct_label, learning_rate, num_classes):
     :return: Tuple of (logits, train_op, cross_entropy_loss)
     """
     # TODO: Implement function
-    logits = tf.reshape(input, (-1, num_classes))
-    return None, None, None
-# tests.test_optimize(optimize)
+    logits = tf.reshape(nn_last_layer, (-1, num_classes))
+    labels = tf.reshape(correct_label, (-1, num_classes))
+    cross_entropy_loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=labels))
+    IoU,IoUop = tf.metrics.mean_iou(tf.argmax(labels, axis = 1), tf.argmax(logits, axis = 1),num_classes,name='IoUmean')
+    tf.summary.scalar('IoUmean', IoU)
+    total_loss = cross_entropy_loss + (1.0 - IoU)
+    tf.summary.scalar('total loss', total_loss)
+    optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
+    training_operation = optimizer.minimize(total_loss)
+    return logits, training_operation, cross_entropy_loss
+tests.test_optimize(optimize)
 
 
 def train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_loss, input_image,
