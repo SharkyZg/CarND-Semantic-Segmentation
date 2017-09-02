@@ -166,7 +166,6 @@ def run():
         saver.save(sess, './model/model.ckpt')
         print('model saved!')
         helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, keep_prob, input_image)
-        out = tf.argmax(tf.nn.softmax(layers_output),axis=-1 , name='labeled_output')
         tf.train.write_graph(sess.graph.as_graph_def(), './model', 'saved_Graph.pb',as_text=False)
 
         # TODO: Train NN using the train_nn function
