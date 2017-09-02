@@ -63,10 +63,11 @@ def layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes):
     output2 = tf.layers.conv2d_transpose(output_connected, 256, 4, strides=(2, 2), padding='same', kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
     output_connected2 = tf.add(output2, vgg_layer3_out)
     output3 = tf.layers.conv2d_transpose(output_connected2, 128, 4, strides=(4, 4), padding='same', kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
+    final_output = tf.layers.conv2d(output3, num_classes, 1, padding='same', kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
 
 
     # Add together skip layers. Upsample by 8 at the end/ return final output (same size as image). Numbers are in the classrom
-    return output3
+    return final_output
 tests.test_layers(layers)
   
 
