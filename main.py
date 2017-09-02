@@ -130,8 +130,8 @@ def run():
         #  https://datascience.stackexchange.com/questions/5224/how-to-prepare-augment-images-for-neural-network
 
         # TODO: Build NN using load_vgg, layers, and optimize function
-        input_image, keep_prob, layer3_out, layer4_out, layer7_out load_vgg(sess, vgg_path)
-        layer_output = layers(layer3_out, layer4_out, layer7_out, num_classes)
+        # input_image, keep_prob, layer3_out, layer4_out, layer7_out load_vgg(sess, vgg_path)
+        # layer_output = layers(layer3_out, layer4_out, layer7_out, num_classes)
 
 
         # TODO: Train NN using the train_nn function
