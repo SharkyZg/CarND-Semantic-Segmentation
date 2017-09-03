@@ -55,14 +55,14 @@ def layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes):
     :return: The Tensor for the last layer of output
     """
     # TODO: Implement function
-    conv_1x1 = tf.layers.conv2d(vgg_layer7_out, 512, 1, padding='same', kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
+    conv_1x1 = tf.layers.conv2d(vgg_layer7_out, 512, 1, padding='same', kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3), kernel_initializer=tf.truncated_normal_initializer(stddev=0.01))
     output = tf.layers.conv2d_transpose(conv_1x1, 512, 4, strides=(2, 2), padding='same', kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
-    conv2_1x1 = tf.layers.conv2d(vgg_layer4_out, 512, 1, padding='same', kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
+    conv2_1x1 = tf.layers.conv2d(vgg_layer4_out, 512, 1, padding='same', kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3), kernel_initializer=tf.truncated_normal_initializer(stddev=0.01))
     output_connected = tf.add(output, conv2_1x1)
-    output2 = tf.layers.conv2d_transpose(output_connected, 256, 4, strides=(2, 2), padding='same', kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
-    conv3_1x1 = tf.layers.conv2d(vgg_layer3_out, 256, 1, padding='same', kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
+    output2 = tf.layers.conv2d_transpose(output_connected, 256, 4, strides=(2, 2), padding='same', kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3), kernel_initializer=tf.truncated_normal_initializer(stddev=0.01))
+    conv3_1x1 = tf.layers.conv2d(vgg_layer3_out, 256, 1, padding='same', kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3), kernel_initializer=tf.truncated_normal_initializer(stddev=0.01))
     output_connected2 = tf.add(output2, conv3_1x1)
-    final_output = tf.layers.conv2d_transpose(output_connected2, num_classes, 16, strides=(8, 8), padding='same', kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
+    final_output = tf.layers.conv2d_transpose(output_connected2, num_classes, 16, strides=(8, 8), padding='same', kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3), kernel_initializer=tf.truncated_normal_initializer(stddev=0.01))
  
 
     return final_output
@@ -130,9 +130,9 @@ def run():
     runs_dir = './runs'
     tests.test_for_kitti_dataset(data_dir)
 
-    batch_size = 10
-    num_epochs = 10
-    learning_rate = 0.0001
+    batch_size = 8
+    num_epochs = 30
+    learning_rate = 1e-3
     
     # Download pretrained vgg model
     helper.maybe_download_pretrained_vgg(data_dir)
