@@ -63,10 +63,8 @@ def layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes):
     conv3_1x1 = tf.layers.conv2d(vgg_layer3_out, 256, 1, padding='same', kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
     output_connected2 = tf.add(output2, conv3_1x1)
     final_output = tf.layers.conv2d_transpose(output_connected2, num_classes, 16, strides=(8, 8), padding='same', kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
-    #final_output = tf.layers.conv2d(output3, num_classes, 1, padding='same', kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
+ 
 
-
-    # Add together skip layers. Upsample by 8 at the end/ return final output (same size as image). Numbers are in the classrom
     return final_output
 tests.test_layers(layers)
   
@@ -84,12 +82,12 @@ def optimize(nn_last_layer, correct_label, learning_rate, num_classes):
     logits = tf.reshape(nn_last_layer, (-1, num_classes))
     labels = tf.reshape(correct_label, (-1, num_classes))
     cross_entropy_loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=labels))
-    # IoU,IoUop = tf.metrics.mean_iou(tf.argmax(labels, axis = 1), tf.argmax(logits, axis = 1),num_classes,name='IoUmean')
-    # tf.summary.scalar('IoUmean', IoU)
-    # total_loss = cross_entropy_loss + (1.0 - IoU)
-    tf.summary.scalar('total loss', cross_entropy_loss)
+    IoU,IoUop = tf.metrics.mean_iou(tf.argmax(labels, axis = 1), tf.argmax(logits, axis = 1))
+    tf.summary.scalar('IoUmean', IoU)
+    total_loss = cross_entropy_loss + (1.0 - IoU)
+    tf.summary.scalar('total loss', total_loss)
     optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
-    training_operation = optimizer.minimize(cross_entropy_loss)
+    training_operation = optimizer.minimize(total_loss)
     return logits, training_operation, cross_entropy_loss
 tests.test_optimize(optimize)
 
@@ -134,8 +132,8 @@ def run():
     runs_dir = './runs'
     tests.test_for_kitti_dataset(data_dir)
     batch_size = 10
-    num_epochs = 30
-    learning_rate = 0.00005
+    num_epochs = 10
+    learning_rate = 0.0001
     # Download pretrained vgg model
     helper.maybe_download_pretrained_vgg(data_dir)
 
