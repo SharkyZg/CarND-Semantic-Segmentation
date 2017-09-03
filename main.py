@@ -156,13 +156,6 @@ def run():
         layers_output = layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes)
         logits, train_op, cross_entropy_loss = optimize(layers_output, correct_label, learning_rate, num_classes)
         
-        # TODO: Save inference data using helper.save_inference_samples
-        saver = tf.train.Saver()
-        saver.save(sess, './model/model.ckpt')
-        print('model saved!')
-        helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, keep_prob, input_image)
-        tf.train.write_graph(sess.graph.as_graph_def(), './model', 'saved_Graph.pb',as_text=False)
-
         # TODO: Train NN using the train_nn function
         train_nn(sess, num_epochs, batch_size, get_batches_function, train_op, cross_entropy_loss, input_image, correct_label, keep_prob, learning_rate)
 
